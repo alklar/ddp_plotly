@@ -61,6 +61,7 @@ Closing Price by Date:
 ```{r plotstocks, dependson=stockplot, echo = FALSE}
 stockplot
 ```
+If you don't see a graph here, please use Chrome or a Chromium-based browser (i.e. Comodo)
 
 ## Summary
 
