@@ -1,0 +1,70 @@
+---
+title: "Creating Share Price Graphs with R"
+author: "Alexander Klar"
+date: "December 27, 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+## Intro
+
+In this short presentation I will
+
+- load share price data from Yahoo using the quantmod package
+- convert the data into a data frame
+- create a graph using the plotly package
+
+## The code (1/2)
+
+```{r stocks1, cache = TRUE, echo = TRUE, results="hide"}
+#load packages
+suppressMessages(library(quantmod))
+suppressMessages(library (plotly))
+
+# not setting a seed gives a warning message in plotly
+set.seed(2016-12-27)
+# load share price data for selected companies
+# no time filter => data starting 2007
+suppressMessages(getSymbols(c('ORCL', 'IBM', 'MSFT', 'GOOGL', 'AMZN')))
+```
+
+
+## The code (2/2)
+```{r stocks2, cache = TRUE, echo = TRUE, results="hide"}
+# convert date and close price into a data frame for each stock 
+oracle <- data.frame(date = index(ORCL$ORCL.Close), 
+            close = as.numeric(ORCL$ORCL.Close), stockname = "Oracle")
+amazon <- data.frame(date = index(AMZN$AMZN.Close), 
+            close = as.numeric(AMZN$AMZN.Close), stockname = "Amazon")
+google <- data.frame(date = index(GOOGL$GOOGL.Close), 
+            close = as.numeric(GOOGL$GOOGL.Close), stockname = "Google")
+ibm <- data.frame(date = index(IBM$IBM.Close), 
+            close = as.numeric(IBM$IBM.Close), stockname = "IBM")
+microsoft <- data.frame(date = index(MSFT$MSFT.Close), 
+            close = as.numeric(MSFT$MSFT.Close), stockname = "Microsoft")
+# data frame used for the plot
+stocks <- rbind(oracle, amazon, google, ibm, microsoft)
+
+# create object to plot 
+stockplot <- plot_ly(stocks, x = stocks$date, y = stocks$close, 
+            color = stocks$stockname, type = "scatter",  mode = "lines")
+```
+
+## The Result
+
+Closing Price by Date:
+```{r plotstocks, dependson=stockplot, echo = FALSE}
+stockplot
+```
+
+## Summary
+
+You have seen, how easy it is to 
+
+- get external financial data using quantmod
+- visualize data using plotly (although quantmod has cool visualisations as well)
